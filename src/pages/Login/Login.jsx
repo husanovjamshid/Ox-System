@@ -1,25 +1,33 @@
-import axios from 'axios';
-import React, { useEffect, useRef } from 'react';
-
-import { Button, Form, Input } from 'antd';
-
+import React from 'react';
+import {
+	LockOutlined,
+	UserOutlined,
+	CloudServerOutlined,
+} from '@ant-design/icons';
+import { Button, Checkbox, Form, Input } from 'antd';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { setToken } from '../../redux/Token/tokenAction';
+import './login.scss';
 export const Login = () => {
-
-	const company = 'toko';
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const onFinish = (values) => {
-		// console.log('Form data:', values.username);
 		fetch('https://toko.ox-sys.com/security/auth_check', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 				Accept: 'application/json',
 			},
-			body: `_username=${values.username}&_password=${values.password}&_subdomain=${company}`,
+			body: `_username=${values.username}&_password=${values.password}&_subdomain=${values.subdomain}`,
 		})
 			.then((res) => res.json())
 			.then((data) => {
 				console.log(data.token);
+				localStorage.setItem('token', data.token);
+				dispatch(setToken(data.token));
+				navigate('/');
 			})
 			.catch((err) => console.log(err));
 	};
@@ -31,34 +39,52 @@ export const Login = () => {
 	return (
 		<>
 			<Form
-				name='basic'
-				labelCol={{ span: 8 }}
-				wrapperCol={{ span: 16 }}
-				style={{ maxWidth: 600, margin: '0 auto' }}
+				name='normal_login'
+				className='login-form'
 				initialValues={{ remember: true }}
 				onFinish={onFinish}
-				onFinishFailed={onFinishFailed}
-				autoComplete='off'
 			>
 				<Form.Item
-					label='Username'
 					name='username'
-					rules={[{ required: true, message: 'Please input your username!' }]}
+					rules={[{ required: true, message: 'Please input your Username!' }]}
 				>
-					<Input />
+					<Input
+						prefix={<UserOutlined className='site-form-item-icon' />}
+						placeholder='Username'
+					/>
 				</Form.Item>
-
 				<Form.Item
-					label='Password'
 					name='password'
-					rules={[{ required: true, message: 'Please input your password!' }]}
+					rules={[{ required: true, message: 'Please input your Password!' }]}
 				>
-					<Input.Password />
+					<Input
+						prefix={<LockOutlined className='site-form-item-icon' />}
+						type='password'
+						placeholder='Password'
+					/>
+				</Form.Item>
+				<Form.Item>
+					<Form.Item
+						name='subdomain'
+						rules={[{ required: true, message: 'Please input your Subdomain!' }]}
+					>
+						<Input
+							prefix={<CloudServerOutlined className='site-form-item-icon' />}
+							placeholder='Subdomain'
+						/>
+					</Form.Item>
+					<Form.Item name='remember' valuePropName='checked' noStyle>
+						<Checkbox>Remember me</Checkbox>
+					</Form.Item>
+
+					<Link className='login-form-forgot' to='/'>
+						Forgot password
+					</Link>
 				</Form.Item>
 
-				<Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-					<Button type='primary' htmlType='submit' style={{ width: '100%' }}>
-						Submit
+				<Form.Item>
+					<Button type='primary' htmlType='submit' className='login-form-button'>
+						Log in
 					</Button>
 				</Form.Item>
 			</Form>

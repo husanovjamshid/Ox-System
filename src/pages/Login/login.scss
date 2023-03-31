@@ -1,12 +1,13 @@
-#components-form-demo-normal-login .login-form {
-	max-width: 300px;
+.login-form {
+	max-width: 400px !important;
+    margin: 0 auto !important;
 }
-#components-form-demo-normal-login .login-form-forgot {
-	float: right;
+.login-form-forgot {
+	float: right !important;
 }
-#components-form-demo-normal-login .ant-col-rtl .login-form-forgot {
-	float: left;
+.ant-col-rtl .login-form-forgot {
+	float: left !important;
 }
-#components-form-demo-normal-login .login-form-button {
-	width: 100%;
+.login-form-button {
+	width: 100% !important;
 }
