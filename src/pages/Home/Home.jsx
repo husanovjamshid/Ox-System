@@ -4,12 +4,11 @@ import { useSelector } from 'react-redux';
 import {
 	FileOutlined,
 	PieChartOutlined,
-	UserOutlined,
 	ScheduleOutlined,
-	TeamOutlined,
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import { useState } from 'react';
+import { Tables } from '../../components/Table/Table';
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
 	return {
@@ -21,7 +20,7 @@ function getItem(label, key, icon, children) {
 }
 const items = [
 	getItem('Dashboard', '1', <PieChartOutlined />),
-	getItem('Products', '2', <ScheduleOutlined  />),
+	getItem('Products', '2', <ScheduleOutlined />),
 	getItem('Files', '9', <FileOutlined />),
 ];
 
@@ -107,7 +106,7 @@ export const Home = () => {
 								background: colorBgContainer,
 							}}
 						>
-							Bill is a cat.
+							<Tables />
 						</div>
 					</Content>
 					<Footer
