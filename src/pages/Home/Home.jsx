@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Button, Modal } from 'antd';
-
+import { Pagination } from '../../components/Pagination/Pagination';
 import {
 	FileOutlined,
 	PieChartOutlined,
@@ -27,6 +27,8 @@ const item = [
 ];
 
 export const Home = () => {
+	// Pagination
+	let [page, setPage] = useState(1);
 	const [collapsed, setCollapsed] = useState(false);
 	const {
 		token: { colorBgContainer },
@@ -35,8 +37,16 @@ export const Home = () => {
 
 	const [product, setProduct] = useState([]);
 
-	const getProducts = async () => {
-		const data = await axios
+	// const getProducts = async () => {
+	// 	const data = await
+	// };
+
+	let { items, total_count } = product;
+
+	console.log(items);
+
+	useEffect(() => {
+		axios
 			.get('https://toko.ox-sys.com/variations', {
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -44,8 +54,8 @@ export const Home = () => {
 					Accept: 'application/json',
 				},
 				params: {
-					// size: 20,
-					page: 1,
+					size: 20,
+					page: `${page}`,
 				},
 			})
 
@@ -56,20 +66,12 @@ export const Home = () => {
 				}
 			})
 			.catch((error) => console.error(error));
-	};
-
-	let { items } = product;
-
-	console.log(items);
-
-	useEffect(() => {
-		getProducts();
-	}, []);
+	}, [page]);
 
 	// Input
 
 	const inputValue = useRef();
-
+	const [modalProduct, setModalProduct] = useState([]);
 	const handleInput = () => {
 		console.log(inputValue.current.value);
 		const filteredProducts = items
@@ -89,7 +91,7 @@ export const Home = () => {
 				}
 				return 0;
 			});
-
+		setModalProduct(filteredProducts);
 		console.log(filteredProducts.map((item) => item.name));
 	};
 
@@ -102,10 +104,13 @@ export const Home = () => {
 
 	const handleOk = () => {
 		setIsModalOpen(false);
+		inputValue.current.value = '';
 	};
 	const handleCancel = () => {
 		setIsModalOpen(false);
+		inputValue.current.value = '';
 	};
+
 	return (
 		<div>
 			<Layout
@@ -204,6 +209,7 @@ export const Home = () => {
 										</table>
 									</div>
 								</div>
+								<Pagination setPage={setPage} page={total_count} />
 							</div>
 						</div>
 					</Content>
@@ -229,50 +235,56 @@ export const Home = () => {
 					<div className='input-group  ms-auto'>
 						<input
 							className='form-control'
-							onKeyUp={handleInput}
+							onChange={handleInput}
 							ref={inputValue}
 							placeholder='Search Products'
 							type='text'
 						/>
-						<div className='card shadow mb-4 mt-3'>
-								<div className='card-header py-3'>
-									<h6 className='m-0 font-weight-bold text-primary'>Products</h6>
-								</div>
-								<div className='card-body'>
-									<div className='table-responsive'>
-										<table
-											className='table table-bordered'
-											id='dataTable'
-											width='100%'
-											cellSpacing={0}
-										>
-											<thead>
-												<tr>
-													<th>ID</th>
-													<th>Name</th>
-													<th>Barcode</th>
-													<th>Sku</th>
-													<th>Description</th>
-												</tr>
-											</thead>
 
-											<tbody>
-												{filteredProducts?.map((item) => (
-													<tr>
-														<td>{item.id}</td>
-														<td>{item.name}</td>
-														<td>{item.barcode}</td>
-														<td>{item.sku}</td>
-														<td>{item?.shortDescription}</td>
-													</tr>
-												))}
-											</tbody>
-										</table>
-									</div>
-								</div>
-							</div>
 						<button className='btn btn-primary'>Search</button>
 					</div>
+					{modalProduct.length ? (
+						<div className='card shadow mb-4 mt-3'>
+							<div className='card-header py-3'>
+								<h6 className='m-0 font-weight-bold text-primary'>Products</h6>
+							</div>
+							<div className='card-body'>
+								<div className='table-responsive'>
+									<table
+										className='table table-bordered'
+										id='dataTable'
+										width='100%'
+										cellSpacing={0}
+									>
+										<thead>
+											<tr>
+												<th>ID</th>
+												<th>Name</th>
+												<th>Barcode</th>
+												<th>Sku</th>
+												<th>Description</th>
+											</tr>
+										</thead>
+
+										<tbody>
+											{modalProduct?.map((item) => (
+												<tr>
+													<td>{item.id}</td>
+													<td>{item.name}</td>
+													<td>{item.barcode}</td>
+													<td>{item.sku}</td>
+													<td>{item?.shortDescription}</td>
+												</tr>
+											))}
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<Pagination setPage={setPage} page={total_count} />
+						</div>
+					) : (
+						''
+					)}
 				</Modal>
 			</>
 		</div>
