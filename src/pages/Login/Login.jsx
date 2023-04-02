@@ -24,7 +24,6 @@ export const Login = () => {
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				console.log(data.token);
 				localStorage.setItem('token', data.token);
 				dispatch(setToken(data.token));
 				navigate('/');
@@ -37,10 +36,11 @@ export const Login = () => {
 	};
 
 	return (
-		<>
+		<div className='bg-dark h-100 position-absolute top-0 end-0 start-0 bottom-0	'>
+			<h2 className='text-white text-center pt-4 mt-5 mb-0'>Admn Panel</h2>
 			<Form
 				name='normal_login'
-				className='login-form shadow-lg p-4 rounded-3 mt-5'
+				className='login-form shadow-lg p-4 rounded-3 mt-4 bg-white'
 				initialValues={{ remember: true }}
 				onFinish={onFinish}
 			>
@@ -88,6 +88,6 @@ export const Login = () => {
 					</Button>
 				</Form.Item>
 			</Form>
-		</>
+		</div>
 	);
 };

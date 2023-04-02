@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
 import { Pagination } from '../../components/Pagination/Pagination';
 import {
 	FileOutlined,
@@ -33,18 +33,16 @@ export const Home = () => {
 	const {
 		token: { colorBgContainer },
 	} = theme.useToken();
+
+	// Token
 	const token = useSelector((item) => item.token.token);
 
+	// Product State
 	const [product, setProduct] = useState([]);
-
-	// const getProducts = async () => {
-	// 	const data = await
-	// };
 
 	let { items, total_count } = product;
 
-	console.log(items);
-
+	// Get Products
 	useEffect(() => {
 		axios
 			.get('https://toko.ox-sys.com/variations', {
@@ -61,7 +59,6 @@ export const Home = () => {
 
 			.then((data) => {
 				if (data.status === 200) {
-					console.log(data.data);
 					setProduct(data.data);
 				}
 			})
@@ -69,11 +66,9 @@ export const Home = () => {
 	}, [page]);
 
 	// Input
-
 	const inputValue = useRef();
 	const [modalProduct, setModalProduct] = useState([]);
 	const handleInput = () => {
-		console.log(inputValue.current.value);
 		const filteredProducts = items
 			.filter((product) => {
 				return product.name
@@ -92,16 +87,12 @@ export const Home = () => {
 				return 0;
 			});
 		setModalProduct(filteredProducts);
-		console.log(filteredProducts.map((item) => item.name));
 	};
 
-	const handlePress = () => {
-		setIsModalOpen(true);
-	};
+	
 
 	// Modal
 	const [isModalOpen, setIsModalOpen] = useState(false);
-
 	const handleOk = () => {
 		setIsModalOpen(false);
 		inputValue.current.value = '';
@@ -109,6 +100,9 @@ export const Home = () => {
 	const handleCancel = () => {
 		setIsModalOpen(false);
 		inputValue.current.value = '';
+	};
+	const handlePress = () => {
+		setIsModalOpen(true);
 	};
 
 	return (
@@ -191,17 +185,18 @@ export const Home = () => {
 													<th>Name</th>
 													<th>Barcode</th>
 													<th>Sku</th>
+													<th>Category</th>
 													<th>Description</th>
 												</tr>
 											</thead>
 
 											<tbody>
 												{items?.map((item) => (
-													<tr>
-														<td>{item.id}</td>
-														<td>{item.name}</td>
-														<td>{item.barcode}</td>
-														<td>{item.sku}</td>
+													<tr key={item.id}>
+														<td>{item?.id}</td>
+														<td>{item?.name}</td>
+														<td>{item?.barcode}</td>
+														<td>{item?.sku}</td>
 														<td>{item?.shortDescription}</td>
 													</tr>
 												))}
@@ -223,9 +218,8 @@ export const Home = () => {
 				</Layout>
 			</Layout>
 			<>
-				
 				<Modal
-					title='Basic Modal'
+					title='Products'
 					open={isModalOpen}
 					onOk={handleOk}
 					onCancel={handleCancel}
