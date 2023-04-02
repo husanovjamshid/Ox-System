@@ -40,7 +40,7 @@ export const Login = () => {
 		<>
 			<Form
 				name='normal_login'
-				className='login-form'
+				className='login-form shadow-lg p-4 rounded-3 mt-5'
 				initialValues={{ remember: true }}
 				onFinish={onFinish}
 			>

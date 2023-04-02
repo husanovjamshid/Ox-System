@@ -10,7 +10,7 @@ import {
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import { useState } from 'react';
-import { Tables } from '../../components/Table/Table';
+
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
 	return {
@@ -223,9 +223,7 @@ export const Home = () => {
 				</Layout>
 			</Layout>
 			<>
-				{/* <Button type='primary' onClick={showModal}>
-					<span className='text-primary'>Open Modal</span>
-				</Button> */}
+				
 				<Modal
 					title='Basic Modal'
 					open={isModalOpen}
@@ -280,7 +278,6 @@ export const Home = () => {
 									</table>
 								</div>
 							</div>
-							<Pagination setPage={setPage} page={total_count} />
 						</div>
 					) : (
 						''
