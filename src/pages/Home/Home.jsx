@@ -1,6 +1,8 @@
 import axios from 'axios';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { Button, Modal } from 'antd';
+
 import {
 	FileOutlined,
 	PieChartOutlined,
@@ -18,7 +20,7 @@ function getItem(label, key, icon, children) {
 		label,
 	};
 }
-const items = [
+const item = [
 	getItem('Dashboard', '1', <PieChartOutlined />),
 	getItem('Products', '2', <ScheduleOutlined />),
 	getItem('Files', '9', <FileOutlined />),
@@ -31,6 +33,8 @@ export const Home = () => {
 	} = theme.useToken();
 	const token = useSelector((item) => item.token.token);
 
+	const [product, setProduct] = useState([]);
+
 	const getProducts = async () => {
 		const data = await axios
 			.get('https://toko.ox-sys.com/variations', {
@@ -40,19 +44,68 @@ export const Home = () => {
 					Accept: 'application/json',
 				},
 				params: {
-					size: 20,
-					page: 2,
+					// size: 20,
+					page: 1,
 				},
 			})
 
-			.then((data) => console.log(data))
+			.then((data) => {
+				if (data.status === 200) {
+					console.log(data.data);
+					setProduct(data.data);
+				}
+			})
 			.catch((error) => console.error(error));
 	};
+
+	let { items } = product;
+
+	console.log(items);
 
 	useEffect(() => {
 		getProducts();
 	}, []);
 
+	// Input
+
+	const inputValue = useRef();
+
+	const handleInput = () => {
+		console.log(inputValue.current.value);
+		const filteredProducts = items
+			.filter((product) => {
+				return product.name
+					.toLowerCase()
+					.includes(inputValue.current.value.toLowerCase());
+			})
+			.sort((a, b) => {
+				const aName = a.name.toLowerCase();
+				const bName = b.name.toLowerCase();
+				if (aName < bName) {
+					return -1;
+				}
+				if (aName > bName) {
+					return 1;
+				}
+				return 0;
+			});
+
+		console.log(filteredProducts.map((item) => item.name));
+	};
+
+	const handlePress = () => {
+		setIsModalOpen(true);
+	};
+
+	// Modal
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const handleOk = () => {
+		setIsModalOpen(false);
+	};
+	const handleCancel = () => {
+		setIsModalOpen(false);
+	};
 	return (
 		<div>
 			<Layout
@@ -76,7 +129,7 @@ export const Home = () => {
 						theme='dark'
 						defaultSelectedKeys={['1']}
 						mode='inline'
-						items={items}
+						items={item}
 					/>
 				</Sider>
 				<Layout className='site-layout'>
@@ -96,8 +149,17 @@ export const Home = () => {
 								margin: '16px 0',
 							}}
 						>
-							<Breadcrumb.Item>User</Breadcrumb.Item>
-							<Breadcrumb.Item>Bill</Breadcrumb.Item>
+							<div style={{ width: '350px' }} className='input-group  ms-auto'>
+								<input
+									className='form-control'
+									onKeyUp={handleInput}
+									ref={inputValue}
+									placeholder='Search Products'
+									type='text'
+									onClick={handlePress}
+								/>
+								<button className='btn btn-primary'>Search</button>
+							</div>
 						</Breadcrumb>
 						<div
 							style={{
@@ -106,7 +168,43 @@ export const Home = () => {
 								background: colorBgContainer,
 							}}
 						>
-							<Tables />
+							<div className='card shadow mb-4'>
+								<div className='card-header py-3'>
+									<h6 className='m-0 font-weight-bold text-primary'>Products</h6>
+								</div>
+								<div className='card-body'>
+									<div className='table-responsive'>
+										<table
+											className='table table-bordered'
+											id='dataTable'
+											width='100%'
+											cellSpacing={0}
+										>
+											<thead>
+												<tr>
+													<th>ID</th>
+													<th>Name</th>
+													<th>Barcode</th>
+													<th>Sku</th>
+													<th>Description</th>
+												</tr>
+											</thead>
+
+											<tbody>
+												{items?.map((item) => (
+													<tr>
+														<td>{item.id}</td>
+														<td>{item.name}</td>
+														<td>{item.barcode}</td>
+														<td>{item.sku}</td>
+														<td>{item?.shortDescription}</td>
+													</tr>
+												))}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
 						</div>
 					</Content>
 					<Footer
@@ -118,6 +216,65 @@ export const Home = () => {
 					</Footer>
 				</Layout>
 			</Layout>
+			<>
+				{/* <Button type='primary' onClick={showModal}>
+					<span className='text-primary'>Open Modal</span>
+				</Button> */}
+				<Modal
+					title='Basic Modal'
+					open={isModalOpen}
+					onOk={handleOk}
+					onCancel={handleCancel}
+				>
+					<div className='input-group  ms-auto'>
+						<input
+							className='form-control'
+							onKeyUp={handleInput}
+							ref={inputValue}
+							placeholder='Search Products'
+							type='text'
+						/>
+						<div className='card shadow mb-4 mt-3'>
+								<div className='card-header py-3'>
+									<h6 className='m-0 font-weight-bold text-primary'>Products</h6>
+								</div>
+								<div className='card-body'>
+									<div className='table-responsive'>
+										<table
+											className='table table-bordered'
+											id='dataTable'
+											width='100%'
+											cellSpacing={0}
+										>
+											<thead>
+												<tr>
+													<th>ID</th>
+													<th>Name</th>
+													<th>Barcode</th>
+													<th>Sku</th>
+													<th>Description</th>
+												</tr>
+											</thead>
+
+											<tbody>
+												{filteredProducts?.map((item) => (
+													<tr>
+														<td>{item.id}</td>
+														<td>{item.name}</td>
+														<td>{item.barcode}</td>
+														<td>{item.sku}</td>
+														<td>{item?.shortDescription}</td>
+													</tr>
+												))}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						<button className='btn btn-primary'>Search</button>
+					</div>
+				</Modal>
+			</>
 		</div>
 	);
 };

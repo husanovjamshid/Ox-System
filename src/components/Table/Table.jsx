@@ -23,6 +23,36 @@ const data = [
 		address: 'New York No. 1 Lake Park',
 	},
 	{
+		key: '1',
+		name: 'John Brown',
+		age: 32,
+		address: 'New York No. 1 Lake Park',
+	},
+	{
+		key: '1',
+		name: 'John Brown',
+		age: 32,
+		address: 'New York No. 1 Lake Park',
+	},
+	{
+		key: '1',
+		name: 'John Brown',
+		age: 32,
+		address: 'New York No. 1 Lake Park',
+	},
+	{
+		key: '1',
+		name: 'John Brown',
+		age: 32,
+		address: 'New York No. 1 Lake Park',
+	},
+	{
+		key: '1',
+		name: 'John Brown',
+		age: 32,
+		address: 'New York No. 1 Lake Park',
+	},
+	{
 		key: '2',
 		name: 'Jim Green',
 		age: 42,
@@ -32,12 +62,6 @@ const data = [
 		key: '3',
 		name: 'Joe Black',
 		age: 32,
-		address: 'Sydney No. 1 Lake Park',
-	},
-	{
-		key: '4',
-		name: 'Disabled User',
-		age: 99,
 		address: 'Sydney No. 1 Lake Park',
 	},
 ];
@@ -57,22 +81,13 @@ const rowSelection = {
 		name: record.name,
 	}),
 };
-export const Tables = () => {
+export const Tables = ({ id }) => {
+	// console.log(id);
 	const [selectionType, setSelectionType] = useState('checkbox');
 
 	return (
 		<>
 			<div>
-				<Radio.Group
-					onChange={({ target: { value } }) => {
-						setSelectionType(value);
-					}}
-					value={selectionType}
-				>
-					<Radio value='checkbox'>Checkbox</Radio>
-					<Radio value='radio'>radio</Radio>
-				</Radio.Group>
-
 				<Divider />
 
 				<Table
@@ -82,6 +97,7 @@ export const Tables = () => {
 					}}
 					columns={columns}
 					dataSource={data}
+					scroll={{ y: 300 }}
 				/>
 			</div>
 		</>
