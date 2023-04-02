@@ -89,8 +89,6 @@ export const Home = () => {
 		setModalProduct(filteredProducts);
 	};
 
-	
-
 	// Modal
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const handleOk = () => {
@@ -185,7 +183,6 @@ export const Home = () => {
 													<th>Name</th>
 													<th>Barcode</th>
 													<th>Sku</th>
-													<th>Category</th>
 													<th>Description</th>
 												</tr>
 											</thead>
@@ -213,7 +210,7 @@ export const Home = () => {
 							textAlign: 'center',
 						}}
 					>
-						Ant Design ©2023 Created by Ant UED
+						Ox System ©2023
 					</Footer>
 				</Layout>
 			</Layout>
